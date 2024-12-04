@@ -1,11 +1,9 @@
 import { createRouter, createWebHashHistory } from "vue-router";
 
-import Index from '@/pages/frontend/index.vue'
-
 const routes = [
 	{
 		path: '/',
-		component: Index,
+		component: import('@/pages/frontend/index.vue'),
 		meta: {
 			title: 'blog 首页'
 		},
@@ -16,6 +14,13 @@ const routes = [
 		meta: {
 			title: 'blog 登录页'
 		},
+	},
+	{
+		path: '/admin/index',
+		component: import("@/pages/admin/index.vue"),
+		meta: {
+			title: 'admin 首页'
+		}
 	}
 ]
 
