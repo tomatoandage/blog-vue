@@ -33,7 +33,7 @@
 					<el-form-item prop="password">
 						<!-- 密码框组件 -->
 						<el-input size="large" v-model="form.password" type="password" placeholder="请输入密码" :prefix-icon="Lock"
-							clearable />
+							clearable show-password />
 					</el-form-item>
 					<el-form-item>
 						<!-- 登录按钮，宽度设置为 100% -->
@@ -53,6 +53,7 @@ import { login } from '@/api/admin/user'
 import { ref, reactive, onMounted, onBeforeUnmount } from 'vue'
 import { useRouter } from 'vue-router';
 import { showMessage } from '@/composables/util'
+import { setToken } from '@/composables/auth';
 
 const router = useRouter()
 
@@ -99,12 +100,14 @@ const onSubmit = () => {
 		login(form.username, form.password).then((res) => {
 			console.log(res)
 			//判断是否成功
-			if (res.data.success == true) {
+			if (res.success == true) {
 				showMessage('登陆成功')
+				//设置 token
+				setToken(res.data.token)
 				//跳转到后台首页
 				router.push('/admin/index')
 			} else {
-				let message = res.data.message
+				let message = res.message
 				showMessage(message, 'error')
 			}
 		})
