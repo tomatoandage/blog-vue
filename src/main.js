@@ -18,6 +18,9 @@ import 'nprogress/nprogress.css'
 //导入 Element Plus 图标
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 
+import ElementPlus from 'element-plus'
+import zhCn from 'element-plus/es/locale/lang/zh-cn'
+
 //引入全局状态管理 Pinia
 import { createPinia } from 'pinia'
 
@@ -32,5 +35,8 @@ for (const [key, component] of Object.entries(ElementPlusIconsVue)) {
 
 app.use(router)
 app.use(pinia)
+app.use(ElementPlus, {
+	locale: zhCn,
+})
 
 app.mount('#app')

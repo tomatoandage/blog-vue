@@ -5,5 +5,5 @@ export function addCategory(name) {
 }
 
 export function getCategoryList(name,startTime,endTime) {
-    return axios.get("/category/page",{name,startTime,endTime})
+    return axios.post("/category/page",{name,startTime,endTime})
 }

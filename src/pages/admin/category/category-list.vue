@@ -1,15 +1,16 @@
 <template>
 	<div>
+		<!-- 搜索框 -->
 		<el-card>
 			<el-form :inline="true" class="demo-form-inline">
 				<el-form-item label="分类名称">
-					<el-input v-model="category.name" placeholder="请输入分类名称"></el-input>
+					<el-input v-model="searchParams.name" placeholder="请输入分类名称"></el-input>
 				</el-form-item>
 				<el-form-item label="创建日期">
 					<div class="demo-date-picker">
 						<div class="block">
-							<el-date-picker v-model="value2" type="daterange" unlink-panels range-separator="To"
-								start-placeholder="开始时间" end-placeholder="结束时间" :shortcuts="shortcuts" :size="size" />
+							<el-date-picker v-model="searchParams.date" type="daterange" unlink-panels range-separator="至"
+								start-placeholder="开始日期" end-placeholder="结束日期" :shortcuts="shortcuts" :size="size" :default-time="[new Date(2010, 9, 1), new Date(2010, 10, 1)]"/>
 						</div>
 					</div>
 				</el-form-item>
@@ -20,26 +21,72 @@
 			</el-form>
 		</el-card>
 		<el-card>
+			<!-- 新增按钮 -->
+			<el-button type="primary" @click="dialogFormVisible = true">
+				<el-icon>
+					<Plus />
+				</el-icon>
+				&nbsp;新增
+			</el-button>
+			<!-- 表格 -->
 			<el-table :data="tableData" border style="width: 100%">
-				<el-table-column prop="date" label="Date" width="180" />
-				<el-table-column prop="name" label="Name" width="180" />
-				<el-table-column prop="address" label="Address" />
+				<el-table-column prop="name" label="Name" width="400" />
+				<el-table-column prop="createTime" label="createTime" width="400" />
 			</el-table>
-			<el-pagination v-model:current-page="currentPage4" v-model:page-size="pageSize4" :page-sizes="[100, 200, 300, 400]"
-				:size="size" :disabled="disabled" :background="background" layout="total, sizes, prev, pager, next, jumper"
-				:total="400" @size-change="handleSizeChange" @current-change="handleCurrentChange" />
+			<el-pagination v-model:current-page="currentPage4" v-model:page-size="pageSize4"
+				:page-sizes="[10, 20, 30, 40]" :size="10" :disabled="disabled" :background="background"
+				layout="total, sizes, prev, pager, next, jumper" :total="tableData.length" @size-change="handleSizeChange"
+				@current-change="handleCurrentChange" style="display: flex;justify-content: center;"/>
 		</el-card>
 	</div>
+	<!-- 新增分类弹框 -->
+	<el-dialog v-model="dialogFormVisible" title="添加文章分类" width="500">
+		<el-form :model="form">
+			<el-form-item label="请输入分类" :label-width="formLabelWidth">
+				<el-input v-model="form.name" autocomplete="off" />
+			</el-form-item>
+		</el-form>
+		<template #footer>
+			<div class="dialog-footer">
+				<el-button @click="dialogFormVisible = false">取消</el-button>
+				<el-button type="primary" @click="dialogFormVisible = false">
+					提交
+				</el-button>
+			</div>
+		</template>
+	</el-dialog>
 </template>
-  
-<script setup>
-import { ref } from 'vue'
 
-const currentPage4 = ref(4)
-const pageSize4 = ref(100)
+<script setup>
+import { addCategory, getCategoryList } from '@/api/admin/category';
+import { ref, reactive } from 'vue'
+
+const dialogFormVisible = ref(false)
+
+const currentPage4 = ref(1)
+const pageSize4 = ref(10)
 const size = ref('default')
 const background = ref(false)
 const disabled = ref(false)
+
+const searchParams = reactive({
+	name: '',
+	date: '',
+})
+
+const tableData = ref([])
+
+const handleSearch = () => {
+	getCategoryList(searchParams.name,searchParams.date[0],searchParams.date[1]).then(res => {
+		tableData.value = res.data
+	}).catch(err => {
+		console.log(err)
+	})
+	console.log('search')
+}
+const form = reactive({
+	name: '',
+})
 
 const handleSizeChange = (val) => {
 	console.log(`${val} items per page`)
@@ -48,15 +95,9 @@ const handleCurrentChange = (val) => {
 	console.log(`current page: ${val}`)
 }
 
-const category = {
-	name: '',
-	startTime: '',
-	endTime: ''
-}
-
 const shortcuts = ref([
 	{
-		text: 'Last week',
+		text: '最近一周',
 		value: () => {
 			const end = new Date()
 			const start = new Date()
@@ -65,7 +106,7 @@ const shortcuts = ref([
 		},
 	},
 	{
-		text: 'Last month',
+		text: '最近一个月',
 		value: () => {
 			const end = new Date()
 			const start = new Date()
@@ -74,7 +115,7 @@ const shortcuts = ref([
 		},
 	},
 	{
-		text: 'Last 3 months',
+		text: '最近三个月',
 		value: () => {
 			const end = new Date()
 			const start = new Date()
@@ -84,30 +125,10 @@ const shortcuts = ref([
 	},
 ])
 
-const tableData = [
-	{
-		date: '2016-05-03',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-	{
-		date: '2016-05-02',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-	{
-		date: '2016-05-04',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-	{
-		date: '2016-05-01',
-		name: 'Tom',
-		address: 'No. 189, Grove St, Los Angeles',
-	},
-]
+
+
 </script>
-  
+
 <style scoped>
 .demo-form-inline {
 	margin: 0 auto;
@@ -119,5 +140,10 @@ const tableData = [
 
 .el-card.is-always-shadow {
 	margin: 10px;
+}
+.el-table--fit {
+    margin: 20px 0;
+    border-bottom: 0;
+    border-right: 0;
 }
 </style>
