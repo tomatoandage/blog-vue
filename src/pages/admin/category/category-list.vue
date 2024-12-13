@@ -59,7 +59,11 @@
 
 <script setup>
 import { addCategory, getCategoryList } from '@/api/admin/category';
-import { ref, reactive } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
+
+onMounted(() => {
+	handleSearch()
+})
 
 const dialogFormVisible = ref(false)
 
