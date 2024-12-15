@@ -49,7 +49,7 @@ const routes = [
 			},
 			{
 				path: '/admin/blog/setting',
-				component: import("@/pages/admin/settings/index.vue"),
+				component: import("@/pages/admin/settings/blog-settings.vue"),
 				meta: {
 					title: 'Admin 配置管理'
 				}

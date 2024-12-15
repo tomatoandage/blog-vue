@@ -86,7 +86,6 @@ const handleSearch = () => {
 	}).catch(err => {
 		console.log(err)
 	})
-	console.log('search')
 }
 const form = reactive({
 	name: '',
