@@ -1,9 +1,9 @@
 import axios from "@/composables/axios";
 
-export function getBlogSettingsDetail(name) {
-	return axios.get("/admin/blog/settings/detail", {name})
+export function getBlogSettingsDetail() {
+	return axios.get("/admin/blog/settings/detail")
 }
 
-export function getTagList(name,startTime,endTime) {
-    return axios.post("/admin/tag/page",{name,startTime,endTime})
+export function updateBlogSettings(data) {
+    return axios.post("/admin/blog/settings/update",data)
 }

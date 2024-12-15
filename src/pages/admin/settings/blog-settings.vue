@@ -79,7 +79,7 @@
 <script setup>
 import { reactive, ref, onMounted } from 'vue'
 import { Check, Close } from '@element-plus/icons-vue'
-import { getBlogSettingsDetail } from '@/api/admin/blogsettings'
+import { getBlogSettingsDetail, updateBlogSettings } from '@/api/admin/blogsettings'
 import { uploadFile } from '@/api/admin/file'
 import { showMessage } from '@/composables/util'
 
@@ -177,6 +177,13 @@ const csdnSwitchChange = (checked) => {
     if (checked == false) {
         form.csdnHomepage = ''
     }
+}
+
+const onSubmit = () => {
+	console.log('onSubmit',form)
+	updateBlogSettings(form).then((res) => {
+		initBlogSettingsDetail()
+	})
 }
 
 initBlogSettingsDetail()
